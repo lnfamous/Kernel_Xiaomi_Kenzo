@@ -15,9 +15,9 @@ jobs:
 
     - name: Install Build Dependencies
       run: |
-        sudo apt update
-        sudo apt install -y bc build-essential libncurses5-dev libssl-dev tcl resign-tools \
-        bison flex libelf-dev clang lld git zip libpstream-dev ccache cpio
+        sudo apt-get update --fix-missing
+        sudo apt-get install -y --fix-missing bc build-essential libncurses5-dev libssl-dev tcl \
+        bison flex libelf-dev clang lld git zip ccache cpio
 
     - name: Download Google Clang Toolchain
       run: |
@@ -36,7 +36,6 @@ jobs:
         export CLANG_TRIPLE=aarch64-linux-gnu-
         
         make O=out kenzo_defconfig
-        
         make -j$(nprocs) O=out CC=clang
 
     - name: Pack with AnyKernel3
