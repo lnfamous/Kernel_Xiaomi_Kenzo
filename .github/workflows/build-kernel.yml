@@ -19,13 +19,9 @@ jobs:
         sudo apt-get install -y --fix-missing bc build-essential libncurses5-dev libssl-dev tcl \
         bison flex libelf-dev clang lld git zip ccache cpio
 
-    - name: Download Clang Toolchain
+    - name: Clone Clang Toolchain
       run: |
-        mkdir -p $GITHUB_WORKSPACE/clang
-        cd $GITHUB_WORKSPACE/clang
-        wget https://gitlab.com
-        tar -xf clang-prebuilts-master.tar.gz --strip-components=1
-        rm clang-prebuilts-master.tar.gz
+       git clone --depth=1 https://github.com $GITHUB_WORKSPACE/clang
 
     - name: Compile Kernel
       run: |
