@@ -38,5 +38,5 @@ jobs:
     - name: Upload Finished Kernel
       uses: actions/upload-artifact@v4
       with:
-        name: Kenzo_Kernel
-        path: Kenzo_Kernel.zip
+        name: Kenzo-Kernel-Zip
+        path: Kenzo-Kernel-Software-Keystore.zip
