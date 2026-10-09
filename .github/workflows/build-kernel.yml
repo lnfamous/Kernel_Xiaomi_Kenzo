@@ -19,13 +19,13 @@ jobs:
         sudo apt-get install -y --fix-missing bc build-essential libncurses5-dev libssl-dev tcl \
         bison flex libelf-dev clang lld git zip ccache cpio
 
-    - name: Download Google Clang Toolchain
+    - name: Download Clang Toolchain
       run: |
         mkdir -p $GITHUB_WORKSPACE/clang
         cd $GITHUB_WORKSPACE/clang
-        wget https://googlesource.com
-        tar -xf clang-r450784d.tar.gz
-        rm clang-r450784d.tar.gz
+        wget https://gitlab.com
+        tar -xf clang-prebuilts-master.tar.gz --strip-components=1
+        rm clang-prebuilts-master.tar.gz
 
     - name: Compile Kernel
       run: |
