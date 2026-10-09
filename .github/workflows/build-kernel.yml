@@ -3,6 +3,9 @@ name: Build Kenzo Kernel
 on:
   workflow_dispatch:
 
+env:
+  CLANG_URL: https://github.com
+
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -20,7 +23,7 @@ jobs:
         bison flex libelf-dev clang lld git zip ccache cpio
 
     - name: Clone Clang Toolchain
-      run: git clone --depth=1 https://github.com $GITHUB_WORKSPACE/clang
+      run: git clone --depth=1 "$CLANG_URL" $GITHUB_WORKSPACE/clang
 
     - name: Compile Kernel
       run: |
