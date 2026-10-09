@@ -13,7 +13,7 @@ jobs:
       with:
         submodules: true
 
-     - name: Install Google GCC 4.9 and Tools
+    - name: Install Google GCC 4.9 and Tools
       run: |
         sudo apt-get update --fix-missing
         sudo apt-get install -y --fix-missing bc build-essential libncurses5-dev libssl-dev tcl \
