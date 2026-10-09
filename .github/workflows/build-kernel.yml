@@ -1,4 +1,4 @@
-name: Build Kenzo Kernel (Google GCC 4.9)
+name: Build Kenzo Kernel
 
 on:
   workflow_dispatch:
@@ -26,7 +26,6 @@ jobs:
         export CROSS_COMPILE=aarch64-linux-gnu-
 
         make O=out kenzo_defconfig
-        scripts/config --file out/.config --disable CONFIG_EARLY_PRINTK
         make -j3 O=out
 
     - name: Pack with AnyKernel3
