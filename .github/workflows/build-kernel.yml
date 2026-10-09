@@ -26,7 +26,7 @@ jobs:
         export CROSS_COMPILE=aarch64-linux-gnu-
 
         make O=out kenzo_defconfig
-        make -j$(nprocs) O=out
+        make -j3 O=out
 
     - name: Pack with AnyKernel3
       run: |
