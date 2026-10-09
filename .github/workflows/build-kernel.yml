@@ -1,0 +1,52 @@
+name: Build Kenzo Kernel
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout Kernel Source
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Install Build Dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y bc build-essential libncurses5-dev libssl-dev tcl resign-tools \
+        bison flex libelf-dev clang lld git zip libpstream-dev ccache cpio
+
+    - name: Download Google Clang Toolchain
+      run: |
+        mkdir -p $GITHUB_WORKSPACE/clang
+        cd $GITHUB_WORKSPACE/clang
+        wget https://googlesource.com
+        tar -xf clang-r450784d.tar.gz
+        rm clang-r450784d.tar.gz
+
+    - name: Compile Kernel
+      run: |
+        export PATH="$GITHUB_WORKSPACE/clang/bin:$PATH"
+        export ARCH=arm64
+        export SUBARCH=arm64
+        export CROSS_COMPILE=aarch64-linux-gnu-
+        export CLANG_TRIPLE=aarch64-linux-gnu-
+        
+        make O=out kenzo_defconfig
+        
+        make -j$(nprocs) O=out CC=clang
+
+    - name: Pack with AnyKernel3
+      run: |
+        cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
+        cd AnyKernel3
+        zip -r9 ../Kenzo-Kernel-Software-Keystore.zip * -x .git README.md
+
+    - name: Upload Finished Kernel
+      uses: actions/artifacts@v4
+      with:
+        name: Kenzo-Kernel-Zip
+        path: Kenzo-Kernel-Software-Keystore.zip
