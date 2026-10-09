@@ -13,22 +13,20 @@ jobs:
       with:
         submodules: true
 
-    - name: Install Build Dependencies
+    - name: Install Extra Build Tools
       run: |
-        sudo apt-get update --fix-missing
-        sudo apt-get install -y --fix-missing bc build-essential libncurses5-dev libssl-dev tcl \
-        bison flex libelf-dev clang lld git zip ccache cpio
+        sudo apt-get update
+        sudo apt-get install -y bc build-essential libncurses5-dev libssl-dev tcl \
+        bison flex libelf-dev git zip ccache cpio gcc-aarch64-linux-gnu
 
     - name: Compile Kernel
       run: |
-        export PATH="$GITHUB_WORKSPACE/clang/bin:$PATH"
         export ARCH=arm64
         export SUBARCH=arm64
         export CROSS_COMPILE=aarch64-linux-gnu-
-        export CLANG_TRIPLE=aarch64-linux-gnu-
-        
+
         make O=out kenzo_defconfig
-        make -j$(nprocs) O=out CC=clang
+        make -j$(nprocs) O=out
 
     - name: Pack with AnyKernel3
       run: |
