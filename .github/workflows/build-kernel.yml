@@ -19,30 +19,34 @@ jobs:
         sudo apt-get install -y --fix-missing bc build-essential libncurses5-dev libssl-dev tcl \
         bison flex libelf-dev git zip ccache cpio
 
-    - name: Setup Google Android NDK (GCC 4.9)
+    - name: Setup Google Android NDK (Clang/LLVM)
       uses: nttld/setup-ndk@v1
       id: setup-ndk
       with:
-        ndk-version: r16b
+        ndk-version: r21e
         add-to-path: false
 
     - name: Compile Kernel
       run: |
         export ARCH=arm64
         export SUBARCH=arm64
-        export CROSS_COMPILE="${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-"
+        
+        export TOOLCHAIN_DIR="${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64"
+        export PATH="$TOOLCHAIN_DIR/bin:$PATH"
+        export CROSS_COMPILE=aarch64-linux-android-
+        export CLANG_TRIPLE=aarch64-linux-gnu-
 
         make O=out kenzo_defconfig
-        make -j3 O=out
+        make -j3 O=out CC=clang
 
     - name: Pack with AnyKernel3
       run: |
         cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
         cd AnyKernel3
-        zip -r9 ../Kenzo-Kernel-Software-Keystore.zip * -x .git README.md
+        zip -r9 ../Kenzo-Kernel.zip * -x .git README.md
 
     - name: Upload Finished Kernel
       uses: actions/upload-artifact@v4
       with:
-        name: Kenzo-Kernel-Zip
-        path: Kenzo-Kernel-Software-Keystore.zip
+        name: Kenzo-Kernel
+        path: Kenzo-Kernel.zip
