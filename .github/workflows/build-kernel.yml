@@ -35,9 +35,10 @@ jobs:
         export PATH="$TOOLCHAIN_DIR/bin:$PATH"
         export CROSS_COMPILE=aarch64-linux-android-
         export CLANG_TRIPLE=aarch64-linux-gnu-
-
-        make O=out kenzo_defconfig
-        make -j3 O=out CC=clang
+        export MAKE_FLAGS="CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip LD=ld.lld"
+        
+        make O=out $MAKE_FLAGS kenzo_defconfig
+        make -j3 O=out $MAKE_FLAGS
 
     - name: Pack with AnyKernel3
       run: |
