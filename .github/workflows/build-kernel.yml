@@ -35,8 +35,9 @@ jobs:
         export PATH="$TOOLCHAIN_DIR/bin:$PATH"
         export CROSS_COMPILE=aarch64-linux-android-
         export CLANG_TRIPLE=aarch64-linux-gnu-
-        export MAKE_FLAGS="CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip LD=ld.lld KCFLAGS=-fno-integrated-as\ -D__ASM_GENERIC_STAT64"
-        
+        export KCFLAGS="-fno-integrated-as -D__ASM_GENERIC_STAT64"
+        export MAKE_FLAGS="CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip LD=ld.lld"
+                
         make O=out $MAKE_FLAGS kenzo_defconfig
         make -j3 O=out $MAKE_FLAGS
 
