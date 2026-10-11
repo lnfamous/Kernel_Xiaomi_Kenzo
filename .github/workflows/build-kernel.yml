@@ -19,15 +19,18 @@ jobs:
         sudo apt-get install -y --fix-missing bc build-essential libncurses5-dev libssl-dev tcl \
         bison flex libelf-dev git zip ccache cpio
 
-    - name: Clone Official Google GCC 4.9
-      run: |
-        git clone --depth=1 https://googlesource.com gcc49
+    - name: Setup Google Android NDK (GCC 4.9)
+      uses: nttld/setup-ndk@v1
+      id: setup-ndk
+      with:
+        ndk-version: r16b
+        add-to-path: false
 
     - name: Compile Kernel
       run: |
         export ARCH=arm64
         export SUBARCH=arm64
-        export CROSS_COMPILE=$GITHUB_WORKSPACE/gcc49/bin/aarch64-linux-android-
+        export CROSS_COMPILE="${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-"
 
         make O=out kenzo_defconfig
         make -j3 O=out
