@@ -19,11 +19,11 @@ jobs:
         sudo apt-get install -y --fix-missing bc build-essential libncurses5-dev libssl-dev tcl \
         bison flex libelf-dev git zip ccache cpio
 
-    - name: Setup Google Android NDK (Clang/LLVM)
+    - name: Setup Google Android NDK (GCC 4.9)
       uses: nttld/setup-ndk@v1
       id: setup-ndk
       with:
-        ndk-version: r21e
+        ndk-version: r16b
         add-to-path: false
 
     - name: Compile Kernel
@@ -31,17 +31,10 @@ jobs:
         export ARCH=arm64
         export SUBARCH=arm64
         
-        export TOOLCHAIN_DIR="${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64"
-        export PATH="$TOOLCHAIN_DIR/bin:$PATH"
-        export CROSS_COMPILE=aarch64-linux-android-
-        export CLANG_TRIPLE=aarch64-linux-gnu-
-        export KCFLAGS="-fno-integrated-as -D__ASM_GENERIC_STAT64 -w"
-        export KCPPFLAGS="-D__ASM_GENERIC_STAT64"
-        export EXTRA_CFLAGS="-D__ASM_GENERIC_STAT64"
-        export MAKE_FLAGS="CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-android- AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip LD=ld.lld KCFLAGS=-D__ASM_GENERIC_STAT64 KCPPFLAGS=-D__ASM_GENERIC_STAT64 EXTRA_CFLAGS=-D__ASM_GENERIC_STAT64"
-                
-        make O=out $MAKE_FLAGS kenzo_defconfig
-        make -j3 O=out $MAKE_FLAGS
+        export CROSS_COMPILE="${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-"
+        
+        make O=out kenzo_defconfig
+        make -j3 O=out
 
     - name: Pack with AnyKernel3
       run: |
